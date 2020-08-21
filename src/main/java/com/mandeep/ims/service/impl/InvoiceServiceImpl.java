@@ -7,8 +7,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mandeep.ims.dto.AllInvoicesResponseDto;
 import com.mandeep.ims.dto.CreateInvoiceDto;
 import com.mandeep.ims.dto.CreateInvoiceResponseDto;
 import com.mandeep.ims.dto.InvoiceResponseDto;
@@ -34,14 +36,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 	private CustomerRepository customerRepository;
 
 	@Override
-	public List<InvoiceResponseDto> getAllInvoices() {
+	public AllInvoicesResponseDto getAllInvoices() {
 		List<InvoiceResponseDto> invoices = new ArrayList<>();
 		Iterable<Invoice> allInvoices = invoiceRepository.findAll();
 		Iterator<Invoice> invoiceItr = allInvoices.iterator();
 		while (invoiceItr.hasNext()) {
 			invoices.add(new InvoiceResponseDto(invoiceItr.next()));
 		}
-		return invoices;
+		return new AllInvoicesResponseDto(customerRepository.count(), invoiceRepository.count(), invoices);
 	}
 
 	@Override
