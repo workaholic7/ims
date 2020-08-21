@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mandeep.ims.dto.AllInvoicesResponseDto;
 import com.mandeep.ims.dto.CreateInvoiceDto;
 import com.mandeep.ims.dto.CreateInvoiceResponseDto;
 import com.mandeep.ims.dto.InvoiceResponseDto;
@@ -28,9 +29,9 @@ public class InvoiceController {
 	private InvoiceService invoiceService;
 
 	@GetMapping
-	public ResponseEntity<List<InvoiceResponseDto>> getAll() throws URISyntaxException {
-		List<InvoiceResponseDto> invoices = invoiceService.getAllInvoices();
-		return ok().body(invoices);
+	public ResponseEntity<AllInvoicesResponseDto> getAll() throws URISyntaxException {
+		AllInvoicesResponseDto response = invoiceService.getAllInvoices();
+		return ok().body(response);
 	}
 
 	@PostMapping
