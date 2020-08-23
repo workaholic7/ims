@@ -9,8 +9,10 @@ import com.mandeep.ims.exception.CustomException;
 
 public interface InvoiceService {
 
-	public List<InvoiceResponseDto> getAllInvoices();
+	public List<InvoiceResponseDto> getAllInvoices() throws CustomException;
 
 	public CreateInvoiceResponseDto createInvoice(CreateInvoiceDto createInvoiceDto) throws CustomException;
+
+	public CreateInvoiceResponseDto downloadInvoice(int id) throws CustomException;
 
 }
