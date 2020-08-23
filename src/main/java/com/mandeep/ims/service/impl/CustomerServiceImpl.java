@@ -7,12 +7,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mandeep.ims.dto.CustomerDto;
 import com.mandeep.ims.entity.Address;
 import com.mandeep.ims.entity.Customer;
 import com.mandeep.ims.exception.CustomException;
-import com.mandeep.ims.repository.AddressRepository;
 import com.mandeep.ims.repository.CustomerRepository;
 import com.mandeep.ims.service.CustomerService;
 
@@ -21,9 +21,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private CustomerRepository customerRepository;
-
-	@Autowired
-	private AddressRepository addressRepository;
 
 	@Override
 	public List<Customer> getAllCustomers() {
@@ -48,10 +45,11 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Throwable.class)
 	public Customer saveCustomer(CustomerDto customerDto) throws CustomException {
 		try {
 			Customer customer = convertDtoToEntity(customerDto);
-			addressRepository.save(customer.getAddress());
+			// addressRepository.save(customer.getAddress());
 			return customerRepository.save(customer);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,12 +58,12 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Throwable.class)
 	public Customer updateCustomer(int id, CustomerDto customerDto) throws CustomException {
 		Optional<Customer> customer = customerRepository.findById(id);
 		if (customer.isPresent()) {
 			Customer cust = customer.get();
 			updateCustomerDetails(cust, customerDto);
-			// addressRepository.save(cust.getAddress());
 			return customerRepository.save(cust);
 
 		} else {
