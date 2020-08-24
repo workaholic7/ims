@@ -1,7 +1,5 @@
 package com.mandeep.ims.service.impl;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -10,10 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -85,23 +79,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public CreateInvoiceResponseDto downloadInvoice(int id) {
-		XWPFDocument document = new XWPFDocument();
-		XWPFParagraph title = document.createParagraph();
-		title.setAlignment(ParagraphAlignment.CENTER);
-		XWPFRun titleRun = title.createRun();
-		titleRun.setText("Build Your REST API with Spring");
-
-		FileOutputStream out;
-		try {
-			out = new FileOutputStream("testdoc.docx");
-			document.write(out);
-			out.close();
-			document.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		return null;
+
 	}
 
 }
