@@ -13,8 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.GenericGenerator;
-
 @Entity
 public class Invoice {
 
@@ -26,8 +24,6 @@ public class Invoice {
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
-	@GenericGenerator(name = "sequence_reference_num", strategy = "com.mandeep.ims.entity.ReferenceNumGenerator")
-	@GeneratedValue(generator = "sequence_reference_num", strategy = GenerationType.SEQUENCE)
 	private String referenceNum;
 
 	private long date;
