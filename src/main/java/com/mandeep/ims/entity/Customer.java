@@ -12,11 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.mandeep.ims.dto.CustomerDto;
+import com.mandeep.ims.util.Util;
 
 @Entity
 public class Customer {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -40,10 +43,10 @@ public class Customer {
 	}
 
 	public Customer(CustomerDto customerDto, Address address) {
-		this.name = customerDto.getName();
-		this.phoneNum = customerDto.getPhoneNum();
+		this.setName(customerDto.getName());
+		this.setPhoneNum(customerDto.getPhoneNum());
 		this.address = address;
-		this.company = customerDto.getCompany();
+		this.setCompany(customerDto.getCompany());
 	}
 
 	public int getId() {
@@ -55,19 +58,20 @@ public class Customer {
 	}
 
 	public String getName() {
-		return name;
+		
+		return Util.decrypt(name);
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = Util.encrypt(name);
 	}
 
 	public String getPhoneNum() {
-		return phoneNum;
+		return Util.decrypt(phoneNum);
 	}
 
 	public void setPhoneNum(String phoneNum) {
-		this.phoneNum = phoneNum;
+		this.phoneNum = Util.encrypt(phoneNum);
 	}
 
 	public Address getAddress() {
@@ -79,11 +83,11 @@ public class Customer {
 	}
 
 	public String getCompany() {
-		return company;
+		return Util.decrypt(company);
 	}
 
 	public void setCompany(String company) {
-		this.company = company;
+		this.company = Util.encrypt(company);
 	}
 
 	public List<Invoice> getInvoice() {
