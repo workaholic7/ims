@@ -37,7 +37,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	private CustomerRepository customerRepository;
 
 	@Override
-	public List<InvoiceResponseDto> getAllInvoices() throws CustomException {
+	public AllInvoicesResponseDto getAllInvoices() throws CustomException {
 		List<InvoiceResponseDto> invoices = new ArrayList<>();
 		Iterable<Invoice> allInvoices = null;
 		try {
