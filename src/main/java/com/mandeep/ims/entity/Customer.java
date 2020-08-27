@@ -12,14 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.mandeep.ims.dto.CustomerDto;
 import com.mandeep.ims.util.Util;
 
 @Entity
 public class Customer {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -35,6 +33,8 @@ public class Customer {
 
 	private String company;
 
+	private long modifiedDate;
+
 	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
 	private List<Invoice> invoice;
 
@@ -46,6 +46,7 @@ public class Customer {
 		this.setName(customerDto.getName());
 		this.setPhoneNum(customerDto.getPhoneNum());
 		this.address = address;
+		this.modifiedDate = Util.getCurrentTimeStamp();
 		this.setCompany(customerDto.getCompany());
 	}
 
@@ -58,7 +59,7 @@ public class Customer {
 	}
 
 	public String getName() {
-		
+
 		return Util.decrypt(name);
 	}
 
@@ -96,5 +97,13 @@ public class Customer {
 
 	public void setInvoice(List<Invoice> invoice) {
 		this.invoice = invoice;
+	}
+
+	public long getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(long modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 }

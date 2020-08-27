@@ -18,7 +18,6 @@ public class CustomerDto {
 	@Size(max = 128, message = "Address line 1 cannot be longer than 128 characters")
 	private String addressLine1;
 
-	@NotBlank
 	@Size(max = 128, message = "Address line 2 cannot be longer than 128 characters")
 	private String addressLine2;
 
