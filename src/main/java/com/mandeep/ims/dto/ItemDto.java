@@ -2,30 +2,18 @@ package com.mandeep.ims.dto;
 
 public class ItemDto {
 
-	public ItemDto(String description, int quantity, float unitPrice, float amount) {
-		super();
-		this.description = description;
-		this.quantity = quantity;
-		this.unitPrice = unitPrice;
-		this.amount = amount;
-	}
-
-	private String name;
+	private int id;
 	private String description;
 	private int quantity;
 	private float unitPrice;
 	private float amount;
 
-	public ItemDto() {
-		super();
+	public int getId() {
+		return id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getDescription() {

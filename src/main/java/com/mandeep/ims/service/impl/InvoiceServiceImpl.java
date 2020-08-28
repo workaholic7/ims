@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +25,11 @@ import com.mandeep.ims.dto.InvoiceResponseDto;
 import com.mandeep.ims.entity.Customer;
 import com.mandeep.ims.entity.Invoice;
 import com.mandeep.ims.entity.ItemDetail;
+import com.mandeep.ims.entity.ItemType;
 import com.mandeep.ims.exception.CustomException;
 import com.mandeep.ims.repository.CustomerRepository;
 import com.mandeep.ims.repository.InvoiceRepository;
+import com.mandeep.ims.repository.ItemTypeRepository;
 import com.mandeep.ims.service.DocumentStorageService;
 import com.mandeep.ims.service.InvoiceService;
 
@@ -47,6 +50,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 	
 	@Autowired
     private DocumentStorageService documneStorageService;
+
+	@Autowired
+	private ItemTypeRepository itemTypeRepository;
 
 	@Override
 	public AllInvoicesResponseDto getAllInvoices() throws CustomException {
@@ -76,7 +82,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		} else {
 			throw new CustomException("Customer doesn't exist");
 		}
-		itemDetail = createInvoiceDto.getItems().stream().map(ItemDetail::new).collect(Collectors.toList());
+		itemDetail = createInvoiceDto.getItems().stream()
+				.map(item -> new ItemDetail(item, itemTypeRepository.findById(item.getId()).orElse(null)))
+				.collect(Collectors.toList());
 		try {
 			inv = invoiceRepository.save(new Invoice(createInvoiceDto.getTotal(), cus, itemDetail));
 
@@ -123,6 +131,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 			return ResponseEntity.notFound().build();
 		}
 
+	}
+
+	@Override
+	public List<ItemType> getItemTypes() {
+		return StreamSupport.stream(itemTypeRepository.findAll().spliterator(), false).collect(Collectors.toList());
 	}
 
 }
