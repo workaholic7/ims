@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Type;
+
 import com.mandeep.ims.dto.CustomerDto;
 import com.mandeep.ims.util.Util;
 
@@ -34,9 +36,15 @@ public class Customer {
 	private String company;
 
 	private long modifiedDate;
+	
+	@Column(nullable = false, columnDefinition = "integer default 0")
+	//@Type(type = "org.hibernate.type.NumericBooleanType")
+	private boolean deleted;
 
 	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
 	private List<Invoice> invoice;
+	
+	
 
 	public Customer() {
 		super();
@@ -48,6 +56,7 @@ public class Customer {
 		this.address = address;
 		this.modifiedDate = Util.getCurrentTimeStamp();
 		this.setCompany(customerDto.getCompany());
+		this.deleted = false;
 	}
 
 	public int getId() {
@@ -105,5 +114,13 @@ public class Customer {
 
 	public void setModifiedDate(long modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 }
