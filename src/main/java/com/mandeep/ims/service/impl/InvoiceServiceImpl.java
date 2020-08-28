@@ -138,4 +138,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 		return StreamSupport.stream(itemTypeRepository.findAll().spliterator(), false).collect(Collectors.toList());
 	}
 
+	@Override
+	public void deleteInvoiceById(int id) throws CustomException {
+		try {
+			invoiceRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new CustomException("Invoice not found");
+		}
+	}
 }
