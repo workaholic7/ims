@@ -38,13 +38,10 @@ public class Customer {
 	private long modifiedDate;
 	
 	@Column(nullable = false, columnDefinition = "integer default 0")
-	//@Type(type = "org.hibernate.type.NumericBooleanType")
 	private boolean deleted;
 
 	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
 	private List<Invoice> invoice;
-	
-	
 
 	public Customer() {
 		super();
