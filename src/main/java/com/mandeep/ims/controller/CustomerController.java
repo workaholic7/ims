@@ -105,7 +105,7 @@ public class CustomerController {
 	public ResponseEntity<Customer> deleteCustomerById(@PathVariable int id) {
 		try {
 			customerService.deleteCustomerById(id);
-			return noContent().build();
+			return noContent().build(); 
 		} catch (CustomException e) {
 			e.printStackTrace();
 			return notFound().build();

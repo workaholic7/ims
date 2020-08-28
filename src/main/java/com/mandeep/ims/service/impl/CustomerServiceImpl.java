@@ -30,7 +30,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<CustomerResponseDto> getAllCustomers() {
 		List<CustomerResponseDto> customers = new ArrayList<>();
-		Iterable<Customer> allcustomers = customerRepository.findAll();
+		Iterable<Customer> allcustomers = customerRepository.findByDeletedFalse();
 		Iterator<Customer> customerItr = allcustomers.iterator();
 		while (customerItr.hasNext()) {
 			customers.add(new CustomerResponseDto(customerItr.next()));
@@ -40,14 +40,14 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public List<CustomerNameResponseDto> getAllCustomerNames() throws CustomException {
-		Iterable<Customer> custIterable = customerRepository.findAll();
+		Iterable<Customer> custIterable = customerRepository.findByDeletedFalse();
 		return StreamSupport.stream(custIterable.spliterator(), false).map(CustomerNameResponseDto::new)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Customer getCustomerById(int id) throws CustomException {
-		Optional<Customer> customer = customerRepository.findById(id);
+		Optional<Customer> customer = customerRepository.findByIdAndDeletedFalse(id);
 		if (customer.isPresent()) {
 			return customer.get();
 		} else {
@@ -71,7 +71,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	@Transactional(rollbackFor = Throwable.class)
 	public Customer updateCustomer(int id, CustomerDto customerDto) throws CustomException {
-		Optional<Customer> customer = customerRepository.findById(id);
+		Optional<Customer> customer = customerRepository.findByIdAndDeletedFalse(id);
 		if (customer.isPresent()) {
 			Customer cust = customer.get();
 			updateCustomerDetails(cust, customerDto);
@@ -85,7 +85,14 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public void deleteCustomerById(int id) throws CustomException {
 		try {
-			customerRepository.deleteById(id);
+			Optional<Customer> customer = customerRepository.findByIdAndDeletedFalse(id);
+			if (customer.isPresent()) {
+				Customer cust = customer.get();
+				cust.setDeleted(true);
+				customerRepository.save(cust);
+			} else {
+				throw new CustomException("Customer not found");
+			}
 		} catch (Exception e) {
 			throw new CustomException("Customer not found");
 		}
@@ -103,6 +110,7 @@ public class CustomerServiceImpl implements CustomerService {
 		cust.setPhoneNum(customerDto.getPhoneNum());
 		cust.setCompany(customerDto.getCompany());
 		cust.setModifiedDate(Util.getCurrentTimeStamp());
+		cust.setDeleted(false);
 		Address address = cust.getAddress();
 		address.setAddressLine1(customerDto.getAddressLine1());
 		address.setAddressLine2(customerDto.getAddressLine2());

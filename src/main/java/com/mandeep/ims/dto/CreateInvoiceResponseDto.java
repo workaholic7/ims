@@ -1,15 +1,16 @@
 package com.mandeep.ims.dto;
 
 import com.mandeep.ims.entity.Invoice;
+import com.mandeep.ims.util.Util;
 
 public class CreateInvoiceResponseDto {
 
 	private String referenceNumber;
-	private long timestamp;
+	private String date;
 
 	public CreateInvoiceResponseDto(Invoice inv) {
 		this.referenceNumber = inv.getReferenceNum();
-		this.timestamp = inv.getDate();
+		this.setDate(Util.formatLocalDateTime(inv.getDate()));
 	}
 
 	public String getReferenceNumber() {
@@ -20,11 +21,15 @@ public class CreateInvoiceResponseDto {
 		this.referenceNumber = referenceNumber;
 	}
 
-	public long getTimestamp() {
-		return timestamp;
+	public String getDate() {
+		return date;
 	}
 
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
+	public void setDate(String date) {
+		this.date = date;
 	}
+
+	
+
+	
 }
