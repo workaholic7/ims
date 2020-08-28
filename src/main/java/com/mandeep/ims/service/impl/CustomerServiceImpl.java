@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mandeep.ims.dto.CustomerDto;
+import com.mandeep.ims.dto.CustomerNameResponseDto;
+import com.mandeep.ims.dto.CustomerResponseDto;
 import com.mandeep.ims.entity.Address;
 import com.mandeep.ims.entity.Customer;
 import com.mandeep.ims.exception.CustomException;
-import com.mandeep.ims.repository.AddressRepository;
 import com.mandeep.ims.repository.CustomerRepository;
 import com.mandeep.ims.service.CustomerService;
+import com.mandeep.ims.util.Util;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -22,18 +27,22 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private CustomerRepository customerRepository;
 
-	@Autowired
-	private AddressRepository addressRepository;
-
 	@Override
-	public List<Customer> getAllCustomers() {
-		List<Customer> customers = new ArrayList<>();
+	public List<CustomerResponseDto> getAllCustomers() {
+		List<CustomerResponseDto> customers = new ArrayList<>();
 		Iterable<Customer> allcustomers = customerRepository.findAll();
 		Iterator<Customer> customerItr = allcustomers.iterator();
 		while (customerItr.hasNext()) {
-			customers.add(customerItr.next());
+			customers.add(new CustomerResponseDto(customerItr.next()));
 		}
 		return customers;
+	}
+
+	@Override
+	public List<CustomerNameResponseDto> getAllCustomerNames() throws CustomException {
+		Iterable<Customer> custIterable = customerRepository.findAll();
+		return StreamSupport.stream(custIterable.spliterator(), false).map(CustomerNameResponseDto::new)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -48,10 +57,10 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Throwable.class)
 	public Customer saveCustomer(CustomerDto customerDto) throws CustomException {
 		try {
 			Customer customer = convertDtoToEntity(customerDto);
-			addressRepository.save(customer.getAddress());
 			return customerRepository.save(customer);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,12 +69,12 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Throwable.class)
 	public Customer updateCustomer(int id, CustomerDto customerDto) throws CustomException {
 		Optional<Customer> customer = customerRepository.findById(id);
 		if (customer.isPresent()) {
 			Customer cust = customer.get();
 			updateCustomerDetails(cust, customerDto);
-			// addressRepository.save(cust.getAddress());
 			return customerRepository.save(cust);
 
 		} else {
@@ -93,6 +102,7 @@ public class CustomerServiceImpl implements CustomerService {
 		cust.setName(customerDto.getName());
 		cust.setPhoneNum(customerDto.getPhoneNum());
 		cust.setCompany(customerDto.getCompany());
+		cust.setModifiedDate(Util.getCurrentTimeStamp());
 		Address address = cust.getAddress();
 		address.setAddressLine1(customerDto.getAddressLine1());
 		address.setAddressLine2(customerDto.getAddressLine2());

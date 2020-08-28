@@ -1,7 +1,5 @@
 package com.mandeep.ims.entity;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.mandeep.ims.util.Util;
 
 @Entity
 public class Invoice {
@@ -26,8 +24,6 @@ public class Invoice {
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
-	@GenericGenerator(name = "sequence_reference_num", strategy = "com.mandeep.ims.entity.ReferenceNumGenerator")
-	@GeneratedValue(generator = "sequence_reference_num", strategy = GenerationType.SEQUENCE)
 	private String referenceNum;
 
 	private long date;
@@ -45,7 +41,7 @@ public class Invoice {
 	public Invoice(float total, Customer cus, List<ItemDetail> itemDetail) {
 		this.customer = cus;
 		this.itemList = itemDetail;
-		this.date = Timestamp.valueOf(LocalDateTime.now()).getTime();
+		this.date = Util.getCurrentTimeStamp();
 		this.total = total;
 	}
 

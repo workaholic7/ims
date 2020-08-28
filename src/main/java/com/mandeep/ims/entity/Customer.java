@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.mandeep.ims.dto.CustomerDto;
+import com.mandeep.ims.util.Util;
 
 @Entity
 public class Customer {
@@ -32,6 +33,8 @@ public class Customer {
 
 	private String company;
 
+	private long modifiedDate;
+
 	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
 	private List<Invoice> invoice;
 
@@ -40,10 +43,11 @@ public class Customer {
 	}
 
 	public Customer(CustomerDto customerDto, Address address) {
-		this.name = customerDto.getName();
-		this.phoneNum = customerDto.getPhoneNum();
+		this.setName(customerDto.getName());
+		this.setPhoneNum(customerDto.getPhoneNum());
 		this.address = address;
-		this.company = customerDto.getCompany();
+		this.modifiedDate = Util.getCurrentTimeStamp();
+		this.setCompany(customerDto.getCompany());
 	}
 
 	public int getId() {
@@ -55,19 +59,20 @@ public class Customer {
 	}
 
 	public String getName() {
-		return name;
+
+		return Util.decrypt(name);
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = Util.encrypt(name);
 	}
 
 	public String getPhoneNum() {
-		return phoneNum;
+		return Util.decrypt(phoneNum);
 	}
 
 	public void setPhoneNum(String phoneNum) {
-		this.phoneNum = phoneNum;
+		this.phoneNum = Util.encrypt(phoneNum);
 	}
 
 	public Address getAddress() {
@@ -79,11 +84,11 @@ public class Customer {
 	}
 
 	public String getCompany() {
-		return company;
+		return Util.decrypt(company);
 	}
 
 	public void setCompany(String company) {
-		this.company = company;
+		this.company = Util.encrypt(company);
 	}
 
 	public List<Invoice> getInvoice() {
@@ -92,5 +97,13 @@ public class Customer {
 
 	public void setInvoice(List<Invoice> invoice) {
 		this.invoice = invoice;
+	}
+
+	public long getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(long modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 }

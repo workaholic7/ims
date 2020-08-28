@@ -1,5 +1,7 @@
 package com.mandeep.ims;
 
+import java.io.IOException;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -8,7 +10,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 public class IMSApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		IMSApplication app = new IMSApplication();
 		SpringApplication.run(IMSApplication.class, args);
+
+		// app.insertItemTypes();
 	}
 }
