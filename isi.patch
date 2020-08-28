@@ -1,0 +1,126 @@
+diff --git a/src/main/java/com/mandeep/ims/entity/Invoice.java b/src/main/java/com/mandeep/ims/entity/Invoice.java
+index a9bc75b..43512e2 100644
+--- a/src/main/java/com/mandeep/ims/entity/Invoice.java
++++ b/src/main/java/com/mandeep/ims/entity/Invoice.java
+@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
+ import javax.persistence.OneToMany;
+ 
+ import org.hibernate.annotations.GenericGenerator;
++import org.hibernate.annotations.Parameter;
+ 
+ @Entity
+ public class Invoice {
+@@ -26,8 +27,6 @@ public class Invoice {
+ 	@JoinColumn(name = "customer_id")
+ 	private Customer customer;
+ 
+-	@GenericGenerator(name = "sequence_reference_num", strategy = "com.mandeep.ims.entity.ReferenceNumGenerator")
+-	@GeneratedValue(generator = "sequence_reference_num", strategy = GenerationType.SEQUENCE)
+ 	private String referenceNum;
+ 
+ 	private long date;
+diff --git a/src/main/java/com/mandeep/ims/entity/ReferenceNumGenerator.java b/src/main/java/com/mandeep/ims/entity/ReferenceNumGenerator.java
+index 16532ab..efa78a6 100644
+--- a/src/main/java/com/mandeep/ims/entity/ReferenceNumGenerator.java
++++ b/src/main/java/com/mandeep/ims/entity/ReferenceNumGenerator.java
+@@ -1,36 +1,45 @@
+ package com.mandeep.ims.entity;
+ 
+-import java.sql.Connection;
+-import java.sql.ResultSet;
+-import java.sql.Statement;
+-import java.time.LocalDate;
++import java.io.Serializable;
++import java.util.Properties;
++import java.util.stream.Stream;
+ 
+ import org.hibernate.HibernateException;
++import org.hibernate.MappingException;
+ import org.hibernate.engine.spi.SharedSessionContractImplementor;
++import org.hibernate.id.Configurable;
+ import org.hibernate.id.IdentifierGenerator;
+-import org.springframework.beans.factory.annotation.Value;
++import org.hibernate.service.ServiceRegistry;
++import org.hibernate.type.Type;
+ 
+-public class ReferenceNumGenerator implements IdentifierGenerator {
+-
+-	@Value("${reference.number.prefix}")
+-	String prefix;
++public class ReferenceNumGenerator implements IdentifierGenerator, Configurable {
+ 
++	private String prefix;
++	 
++    @Override
++    public Serializable generate(
++      SharedSessionContractImplementor session, Object obj) 
++      throws HibernateException {
++ 
++        String query = String.format("select %s from %s", 
++            session.getEntityPersister(obj.getClass().getName(), obj)
++              .getIdentifierPropertyName(),
++            obj.getClass().getSimpleName());
++ 
++        Stream<String> ids = session.createQuery(query).stream();
++ 
++        Long max = ids.map(o -> o.replace(prefix + "-", ""))
++          .mapToLong(Long::parseLong)
++          .max()
++          .orElse(0L);
++ 
++        return prefix + "-" + (max + 1);
++    }
++ 
+ 	@Override
+-	public String generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
+-		Connection con = session.connection();
+-		String generatedRefNum = null;
+-		try {
+-			Statement st = con.createStatement();
+-			ResultSet rs = st.executeQuery("select top 1 id from invoice order by id desc");
+-			if (rs.next()) {
+-				int id = rs.getInt(1) + 1;
+-				generatedRefNum = prefix + id + LocalDate.now().getMonthValue() + LocalDate.now().getYear();
+-				return generatedRefNum;
+-			}
+-		} catch (Exception e) {
+-			e.printStackTrace();
+-		}
+-		return null;
++	public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {
++		prefix = params.getProperty("prefix");
++		
+ 	}
+ 
+ }
+diff --git a/src/main/java/com/mandeep/ims/service/impl/InvoiceServiceImpl.java b/src/main/java/com/mandeep/ims/service/impl/InvoiceServiceImpl.java
+index 839666f..d4bd4ec 100644
+--- a/src/main/java/com/mandeep/ims/service/impl/InvoiceServiceImpl.java
++++ b/src/main/java/com/mandeep/ims/service/impl/InvoiceServiceImpl.java
+@@ -1,5 +1,6 @@
+ package com.mandeep.ims.service.impl;
+ 
++import java.time.LocalDate;
+ import java.util.ArrayList;
+ import java.util.Iterator;
+ import java.util.List;
+@@ -25,6 +26,9 @@ import com.mandeep.ims.service.InvoiceService;
+ 
+ @Service
+ public class InvoiceServiceImpl implements InvoiceService {
++	
++	@Value("${reference.number.prefix}")
++	String prefix;
+ 
+ 	@Autowired
+ 	private InvoiceRepository invoiceRepository;
+@@ -60,6 +64,9 @@ public class InvoiceServiceImpl implements InvoiceService {
+ 
+ 		Invoice inv = invoiceRepository.save(new Invoice(createInvoiceDto.getTotal(), cus, itemDetail));
+ 		// itemDetailsRepository.saveAll(itemDetail);
++		String refNum = prefix + inv.getId() + LocalDate.now().getMonthValue() + LocalDate.now().getYear();
++		inv.setReferenceNum(refNum);
++		invoiceRepository.save(inv);
+ 		return new CreateInvoiceResponseDto(inv);
+ 	}
+ }

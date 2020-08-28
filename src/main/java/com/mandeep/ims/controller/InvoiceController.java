@@ -3,8 +3,6 @@ package com.mandeep.ims.controller;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mandeep.ims.dto.AllInvoicesResponseDto;
 import com.mandeep.ims.dto.CreateInvoiceDto;
 import com.mandeep.ims.dto.CreateInvoiceResponseDto;
-import com.mandeep.ims.dto.InvoiceResponseDto;
 import com.mandeep.ims.exception.CustomException;
 import com.mandeep.ims.service.InvoiceService;
 
@@ -30,14 +27,14 @@ public class InvoiceController {
 	private InvoiceService invoiceService;
 
 	@GetMapping
-	public ResponseEntity<List<InvoiceResponseDto>> getAll() {
-		List<InvoiceResponseDto> invoices;
+	public ResponseEntity<AllInvoicesResponseDto> getAll() {
+		AllInvoicesResponseDto invoices;
 		try {
 			invoices = invoiceService.getAllInvoices();
 			return ok().body(invoices);
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return new ResponseEntity<List<InvoiceResponseDto>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<AllInvoicesResponseDto>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -55,10 +52,9 @@ public class InvoiceController {
 	}
 
 	@GetMapping("download/{id}")
-	public ResponseEntity<CreateInvoiceResponseDto> downloadInvoice(@PathVariable("id") int id) {
+	public ResponseEntity downloadInvoice(@PathVariable("id") int id) {
 		try {
-			CreateInvoiceResponseDto createInvoiceResponseDto = invoiceService.downloadInvoice(id);
-			return ok().body(createInvoiceResponseDto);
+			return invoiceService.downloadInvoice(id);
 		} catch (CustomException e) {
 			e.printStackTrace();
 			return notFound().build();

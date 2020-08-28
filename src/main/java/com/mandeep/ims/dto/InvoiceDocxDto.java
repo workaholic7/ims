@@ -7,7 +7,7 @@ public class InvoiceDocxDto {
 	private String name;
 	private String phoneNum;
 	private String address;
-	private List<ItemDto> items;
+	private List<ItemCtx> items;
 
 	public final String getName() {
 		return name;
@@ -33,12 +33,14 @@ public class InvoiceDocxDto {
 		this.address = address;
 	}
 
-	public final List<ItemDto> getItems() {
+	public final List<ItemCtx> getItems() {
 		return items;
 	}
 
-	public final void setItems(List<ItemDto> items) {
+	public final void setItems(List<ItemCtx> items) {
 		this.items = items;
 	}
+	
+	
 
 }

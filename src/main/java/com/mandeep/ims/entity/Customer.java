@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.mandeep.ims.dto.CustomerDto;
 import com.mandeep.ims.util.Util;
 

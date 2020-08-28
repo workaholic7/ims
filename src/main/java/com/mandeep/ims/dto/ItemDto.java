@@ -16,6 +16,10 @@ public class ItemDto {
 	private float unitPrice;
 	private float amount;
 
+	public ItemDto() {
+		super();
+	}
+
 	public String getName() {
 		return name;
 	}
