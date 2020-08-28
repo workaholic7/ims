@@ -18,4 +18,6 @@ public interface InvoiceService {
 
 	public List<ItemType> getItemTypes();
 
+	public void deleteInvoiceById(int id) throws CustomException;
+
 }
