@@ -11,9 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class IMSApplication {
 
 	public static void main(String[] args) throws IOException {
-		IMSApplication app = new IMSApplication();
 		SpringApplication.run(IMSApplication.class, args);
-
-		// app.insertItemTypes();
 	}
+
 }

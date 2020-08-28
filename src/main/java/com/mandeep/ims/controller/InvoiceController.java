@@ -55,10 +55,9 @@ public class InvoiceController {
 	}
 
 	@GetMapping("download/{id}")
-	public ResponseEntity<CreateInvoiceResponseDto> downloadInvoice(@PathVariable("id") int id) {
+	public ResponseEntity downloadInvoice(@PathVariable("id") int id) {
 		try {
-			CreateInvoiceResponseDto createInvoiceResponseDto = invoiceService.downloadInvoice(id);
-			return ok().body(createInvoiceResponseDto);
+			return invoiceService.downloadInvoice(id);
 		} catch (CustomException e) {
 			e.printStackTrace();
 			return notFound().build();
