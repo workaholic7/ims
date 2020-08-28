@@ -1,13 +1,12 @@
 package com.mandeep.ims.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import com.mandeep.ims.dto.ItemDto;
 
@@ -18,7 +17,7 @@ public class ItemDetail {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Enumerated(EnumType.ORDINAL)
+	@OneToOne
 	private ItemType itemType;
 
 	private String description;
@@ -36,8 +35,8 @@ public class ItemDetail {
 		super();
 	}
 
-	public ItemDetail(ItemDto itemDto) {
-		this.itemType = ItemType.valueOf(itemDto.getName());
+	public ItemDetail(ItemDto itemDto, ItemType itemType) {
+		this.itemType = itemType;
 		this.description = itemDto.getDescription();
 		this.quantity = itemDto.getQuantity();
 		this.unitPrice = itemDto.getUnitPrice();
