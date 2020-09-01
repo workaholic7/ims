@@ -82,6 +82,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 		} else {
 			throw new CustomException("Customer doesn't exist");
 		}
+		float actualPrice = (float)createInvoiceDto.getItems()
+							.stream().mapToDouble(item -> item.getUnitPrice()* item.getQuantity())
+							.sum();
+		if(actualPrice != createInvoiceDto.getTotal()) {
+			throw new CustomException("Total Amount doesn't match with Actual Amount.");
+		}
 		itemDetail = createInvoiceDto.getItems().stream()
 				.map(item -> new ItemDetail(item, itemTypeRepository.findById(item.getId()).orElse(null)))
 				.collect(Collectors.toList());

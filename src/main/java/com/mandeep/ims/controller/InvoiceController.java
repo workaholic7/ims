@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mandeep.ims.dto.AllInvoicesResponseDto;
 import com.mandeep.ims.dto.CreateInvoiceDto;
 import com.mandeep.ims.dto.CreateInvoiceResponseDto;
+import com.mandeep.ims.dto.ErrorResponseDto;
 import com.mandeep.ims.entity.Invoice;
 import com.mandeep.ims.entity.ItemType;
 import com.mandeep.ims.exception.CustomException;
@@ -53,7 +54,7 @@ public class InvoiceController {
 			return ok().body(createInvoiceResponseDto);
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return notFound().build();
+			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -63,7 +64,7 @@ public class InvoiceController {
 			return invoiceService.downloadInvoice(id);
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return notFound().build();
+			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.NOT_FOUND);
 		}
 	}
 

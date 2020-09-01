@@ -28,6 +28,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.mandeep.ims.entity.Invoice;
 import com.mandeep.ims.entity.ItemDetail;
 import com.mandeep.ims.exception.CustomException;
+import com.mandeep.ims.util.Util;
 
 @Service
 public class DocumentStorageService {
@@ -124,7 +125,7 @@ public class DocumentStorageService {
 		table.addCell(getCell(invoice.getCustomer().getPhoneNum(), PdfPCell.ALIGN_LEFT, false, false));
 		table.addCell(getCell());
 		table.addCell(getCell("Date: ", PdfPCell.ALIGN_LEFT, true, false));
-		table.addCell(getCell(String.valueOf(invoice.getDate()), PdfPCell.ALIGN_LEFT, false, false));
+		table.addCell(getCell(Util.formatLocalDateTime(invoice.getDate()), PdfPCell.ALIGN_LEFT, false, false));
 		table.addCell(getCell());
 		table.addCell(getCell(invoice.getCustomer().getAddress().toString(), PdfPCell.ALIGN_LEFT, false, false, 2));
 		table.addCell(getCell());
