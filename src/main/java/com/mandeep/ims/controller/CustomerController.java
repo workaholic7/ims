@@ -38,7 +38,6 @@ import com.mandeep.ims.service.CustomerService;
 @CrossOrigin(origins = "*")
 public class CustomerController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 	@Autowired
 	private CustomerService customerService;
 
