@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mandeep.ims.dto.CustomerDto;
 import com.mandeep.ims.dto.CustomerNameResponseDto;
 import com.mandeep.ims.dto.CustomerResponseDto;
+import com.mandeep.ims.dto.GetCustomerResponseDto;
 import com.mandeep.ims.entity.Address;
 import com.mandeep.ims.entity.Customer;
 import com.mandeep.ims.exception.CustomException;
@@ -46,10 +47,10 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer getCustomerById(int id) throws CustomException {
+	public GetCustomerResponseDto getCustomerById(int id) throws CustomException {
 		Optional<Customer> customer = customerRepository.findByIdAndDeletedFalse(id);
 		if (customer.isPresent()) {
-			return customer.get();
+			return new GetCustomerResponseDto(customer.get());
 		} else {
 			throw new CustomException("Customer not found");
 		}

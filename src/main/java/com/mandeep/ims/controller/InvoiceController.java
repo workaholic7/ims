@@ -3,10 +3,12 @@ package com.mandeep.ims.controller;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.ResponseEntity.created;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -43,7 +45,7 @@ public class InvoiceController {
 			return ok().body(invoices);
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return new ResponseEntity<AllInvoicesResponseDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -51,7 +53,7 @@ public class InvoiceController {
 	public ResponseEntity<CreateInvoiceResponseDto> createInvoice(@RequestBody CreateInvoiceDto createInvoiceDto) {
 		try {
 			CreateInvoiceResponseDto createInvoiceResponseDto = invoiceService.createInvoice(createInvoiceDto);
-			return ok().body(createInvoiceResponseDto);
+			return created(null).body(createInvoiceResponseDto);
 		} catch (CustomException e) {
 			e.printStackTrace();
 			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.NOT_FOUND);
@@ -81,7 +83,7 @@ public class InvoiceController {
 			return noContent().build();
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return notFound().build();
+			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.NOT_FOUND);
 		}
 	}
 }
