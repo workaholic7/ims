@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mandeep.ims.dto.CustomerDto;
 import com.mandeep.ims.dto.CustomerNameResponseDto;
 import com.mandeep.ims.dto.CustomerResponseDto;
+import com.mandeep.ims.dto.ErrorResponseDto;
+import com.mandeep.ims.dto.GetCustomerResponseDto;
 import com.mandeep.ims.entity.Customer;
 import com.mandeep.ims.exception.CustomException;
 import com.mandeep.ims.service.CustomerService;
@@ -55,20 +57,20 @@ public class CustomerController {
 			return ok().body(customerNames);
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Customer> getCustomerById(@PathVariable(name = "id") int id) throws URISyntaxException {
-		Customer customer;
+	public ResponseEntity<GetCustomerResponseDto> getCustomerById(@PathVariable(name = "id") int id) throws URISyntaxException {
+		GetCustomerResponseDto customer;
 		try {
 			customer = customerService.getCustomerById(id);
 			return ok().body(customer);
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return notFound().build();
+			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -82,7 +84,7 @@ public class CustomerController {
 			return created(uri).body(customer);
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return new ResponseEntity<Customer>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -96,7 +98,7 @@ public class CustomerController {
 			return created(uri).body(customer);
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return new ResponseEntity<Customer>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -107,7 +109,7 @@ public class CustomerController {
 			return noContent().build(); 
 		} catch (CustomException e) {
 			e.printStackTrace();
-			return notFound().build();
+			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.NOT_FOUND);
 		}
 	}
 }
