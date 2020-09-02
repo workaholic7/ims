@@ -5,7 +5,6 @@ import java.util.List;
 import com.mandeep.ims.dto.CustomerDto;
 import com.mandeep.ims.dto.CustomerNameResponseDto;
 import com.mandeep.ims.dto.CustomerResponseDto;
-import com.mandeep.ims.dto.GetCustomerResponseDto;
 import com.mandeep.ims.entity.Customer;
 import com.mandeep.ims.exception.CustomException;
 
@@ -15,7 +14,7 @@ public interface CustomerService {
 
 	public List<CustomerNameResponseDto> getAllCustomerNames() throws CustomException;
 
-	public GetCustomerResponseDto getCustomerById(int id) throws CustomException;
+	public CustomerDto getCustomerById(int id) throws CustomException;
 
 	public Customer saveCustomer(CustomerDto customerDto) throws CustomException;
 

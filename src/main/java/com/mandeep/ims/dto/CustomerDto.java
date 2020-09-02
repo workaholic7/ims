@@ -4,6 +4,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.mandeep.ims.entity.Customer;
+
 public class CustomerDto {
 
 	@NotBlank
@@ -36,6 +38,17 @@ public class CustomerDto {
 	@Size(max = 128, message = "Company name cannot be longer than 128 characters")
 	@Pattern(regexp = "^[\\w\\d\\s ,.-]+", message = "Company name can contain only characters, comma, period & hash only")
 	private String company;
+
+	public CustomerDto(Customer customer) {
+		this.name = customer.getName();
+		this.phoneNum = customer.getPhoneNum();
+		this.addressLine1 = customer.getAddress().getAddressLine1();
+		this.addressLine2 = customer.getAddress().getAddressLine2();
+		this.state = customer.getAddress().getState();
+		this.zipCode = customer.getAddress().getZipCode();
+		this.country = customer.getAddress().getCountry();
+		this.company = customer.getCompany();
+	}
 
 	public String getName() {
 		return name;
@@ -100,5 +113,4 @@ public class CustomerDto {
 	public void setCompany(String company) {
 		this.company = company;
 	}
-
 }

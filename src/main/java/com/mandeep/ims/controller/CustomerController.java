@@ -2,7 +2,6 @@ package com.mandeep.ims.controller;
 
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.noContent;
-import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
 
 import java.net.URI;
@@ -11,8 +10,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +27,6 @@ import com.mandeep.ims.dto.CustomerDto;
 import com.mandeep.ims.dto.CustomerNameResponseDto;
 import com.mandeep.ims.dto.CustomerResponseDto;
 import com.mandeep.ims.dto.ErrorResponseDto;
-import com.mandeep.ims.dto.GetCustomerResponseDto;
 import com.mandeep.ims.entity.Customer;
 import com.mandeep.ims.exception.CustomException;
 import com.mandeep.ims.service.CustomerService;
@@ -63,8 +59,8 @@ public class CustomerController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<GetCustomerResponseDto> getCustomerById(@PathVariable(name = "id") int id) throws URISyntaxException {
-		GetCustomerResponseDto customer;
+	public ResponseEntity<CustomerDto> getCustomerById(@PathVariable(name = "id") int id) throws URISyntaxException {
+		CustomerDto customer;
 		try {
 			customer = customerService.getCustomerById(id);
 			return ok().body(customer);
@@ -106,7 +102,7 @@ public class CustomerController {
 	public ResponseEntity<Customer> deleteCustomerById(@PathVariable int id) {
 		try {
 			customerService.deleteCustomerById(id);
-			return noContent().build(); 
+			return noContent().build();
 		} catch (CustomException e) {
 			e.printStackTrace();
 			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.NOT_FOUND);
