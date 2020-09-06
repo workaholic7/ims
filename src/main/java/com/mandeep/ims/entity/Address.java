@@ -92,7 +92,7 @@ public class Address {
 	
 	@Override
 	public String toString() {
-		return this.addressLine1 + this.addressLine2 
+		return this.addressLine1 +"\n"+ this.addressLine2 
 				+ "\n" + this.state 
 				+ "\n" + this.country + "-" + this.zipCode;
 	}
