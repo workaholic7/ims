@@ -17,11 +17,13 @@ import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.TabStop.Alignment;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -104,7 +106,15 @@ public class DocumentStorageService {
 			
 			body.add(table);
 			createItemTable(body, invoice.getItemList());
+			addEmptyLine(body, 1);
 			
+			PdfPTable total = new PdfPTable(4);
+			//total.setTotalWidth(100);
+			total.setHorizontalAlignment(Element.ALIGN_RIGHT);
+			total.addCell(getCell("Total (RM): ", PdfPCell.ALIGN_RIGHT, true, false, 3));
+			total.addCell(getCell(String.valueOf(invoice.getTotal()), PdfPCell.ALIGN_LEFT, false, false));
+			body.add(total);
+		
 			document.add(body);
 
 		} catch (DocumentException e) {

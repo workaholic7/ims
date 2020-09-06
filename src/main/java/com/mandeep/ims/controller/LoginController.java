@@ -20,12 +20,13 @@ public class LoginController {
 	@Value("${application.username}")
 	private String username;
 
-	@Value("${application.username}")
+	@Value("${application.password}")
 	private String password;
 
 	@PostMapping
 	public ResponseEntity login(@RequestBody LoginRequestDto request) {
-		if (request.getUserId().equalsIgnoreCase(username) && request.getUserId().equalsIgnoreCase(username)) {
+		if (request.getUserId().equalsIgnoreCase(username) 
+				&& request.getPassword().equalsIgnoreCase(password)) {
 			return ResponseEntity.ok().body("User Authenticated");
 		} else {
 			return new ResponseEntity(new ErrorResponseDto("Username or Password is incorrect"),
