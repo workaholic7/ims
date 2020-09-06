@@ -90,8 +90,7 @@ public class CustomerController {
 		Customer customer;
 		try {
 			customer = customerService.updateCustomer(id, customerDto);
-			URI uri = new URI("/customer/" + customer.getId());
-			return created(uri).body(customer);
+			return ok().body(customer);
 		} catch (CustomException e) {
 			e.printStackTrace();
 			return new ResponseEntity(new ErrorResponseDto(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);

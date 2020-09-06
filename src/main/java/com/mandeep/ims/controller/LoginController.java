@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mandeep.ims.dto.ErrorResponseDto;
 import com.mandeep.ims.dto.LoginRequestDto;
 
 @RestController
@@ -18,17 +19,17 @@ public class LoginController {
 
 	@Value("${application.username}")
 	private String username;
-	
+
 	@Value("${application.username}")
 	private String password;
-	
+
 	@PostMapping
-	public ResponseEntity<String> login(@RequestBody LoginRequestDto request) {
-		if(request.getUserId().equalsIgnoreCase(username) 
-				&& request.getUserId().equalsIgnoreCase(username)) {
+	public ResponseEntity login(@RequestBody LoginRequestDto request) {
+		if (request.getUserId().equalsIgnoreCase(username) && request.getUserId().equalsIgnoreCase(username)) {
 			return ResponseEntity.ok().body("User Authenticated");
 		} else {
-			return new ResponseEntity<String>("Username or Password is incorrect", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(new ErrorResponseDto("Username or Password is incorrect"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

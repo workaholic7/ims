@@ -8,6 +8,8 @@ import com.mandeep.ims.entity.Customer;
 
 public class CustomerDto {
 
+	private int id;
+
 	@NotBlank
 	@Size(max = 128, message = "Name cannot be longer than 128 characters")
 	private String name;
@@ -39,7 +41,12 @@ public class CustomerDto {
 	@Pattern(regexp = "^[\\w\\d\\s ,.-]+", message = "Company name can contain only characters, comma, period & hash only")
 	private String company;
 
+	public CustomerDto() {
+
+	}
+
 	public CustomerDto(Customer customer) {
+		this.id = customer.getId();
 		this.name = customer.getName();
 		this.phoneNum = customer.getPhoneNum();
 		this.addressLine1 = customer.getAddress().getAddressLine1();
@@ -48,6 +55,14 @@ public class CustomerDto {
 		this.zipCode = customer.getAddress().getZipCode();
 		this.country = customer.getAddress().getCountry();
 		this.company = customer.getCompany();
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -113,4 +128,5 @@ public class CustomerDto {
 	public void setCompany(String company) {
 		this.company = company;
 	}
+
 }
