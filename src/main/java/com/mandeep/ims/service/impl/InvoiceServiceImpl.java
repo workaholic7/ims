@@ -38,7 +38,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Value("${reference.number.prefix}")
 	String prefix;
-	
+
 	@Value("${upload_dir}")
 	String uploadDir;
 
@@ -47,9 +47,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	private CustomerRepository customerRepository;
-	
+
 	@Autowired
-    private DocumentStorageService documneStorageService;
+	private DocumentStorageService documneStorageService;
 
 	@Autowired
 	private ItemTypeRepository itemTypeRepository;
@@ -82,10 +82,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		} else {
 			throw new CustomException("Customer doesn't exist");
 		}
-		float actualPrice = (float)createInvoiceDto.getItems()
-							.stream().mapToDouble(item -> item.getUnitPrice()* item.getQuantity())
-							.sum();
-		if(actualPrice != createInvoiceDto.getTotal()) {
+		float actualPrice = (float) createInvoiceDto.getItems().stream()
+				.mapToDouble(item -> item.getUnitPrice() * item.getQuantity()).sum();
+		if (actualPrice != createInvoiceDto.getTotal()) {
 			throw new CustomException("Total Amount doesn't match with Actual Amount.");
 		}
 		itemDetail = createInvoiceDto.getItems().stream()
@@ -107,16 +106,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public ResponseEntity downloadInvoice(int id) {
 		Optional<Invoice> invoice = invoiceRepository.findById(id);
-		if(invoice.isPresent()) {
-			String fileName = uploadDir+"/"+"Invoice_"+invoice.get().getReferenceNum()+".pdf";
+		if (invoice.isPresent()) {
+			String fileName = uploadDir + "Invoice_" + invoice.get().getReferenceNum() + ".pdf";
 			Resource resource = null;
-			if(fileName !=null && !fileName.isEmpty()) {
+			if (fileName != null && !fileName.isEmpty()) {
 				try {
 					resource = documneStorageService.loadFileAsResource(fileName);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if(resource==null) {
+				if (resource == null) {
 					try {
 						resource = documneStorageService.createNewFile(invoice.get(), fileName);
 					} catch (CustomException e) {
@@ -124,14 +123,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 					}
 				}
 				String contentType = "application/pdf";
-				return ResponseEntity.ok()
-						.contentType(MediaType.parseMediaType(contentType))
-						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-						.body(resource);	
+				return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+						.header(HttpHeaders.CONTENT_DISPOSITION,
+								"attachment; filename=\"" + resource.getFilename() + "\"")
+						.body(resource);
 			} else {
 				return ResponseEntity.notFound().build();
 			}
-
 
 		} else {
 			return ResponseEntity.notFound().build();
