@@ -68,7 +68,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 		while (invoiceItr.hasNext()) {
 			invoices.add(new InvoiceResponseDto(invoiceItr.next()));
 		}
-		return new AllInvoicesResponseDto(customerRepository.count(), invoiceRepository.count(), invoices);
+		Long customers = customerRepository.countByDeleted(false);
+		return new AllInvoicesResponseDto(customers, invoiceRepository.count(), invoices);
 	}
 
 	@Override
