@@ -14,4 +14,6 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer> {
 
 	Optional<Customer> findByIdAndDeletedFalse(int id);
 
+	Long countByDeleted(boolean deleted);
+
 }
